@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ψ</title>
+    <link>https://sidmani.com/</link>
+    <description>Recent content on Ψ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 28 Apr 2021 12:18:59 -0700</lastBuildDate><atom:link href="https://sidmani.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deciding the behavior of edited programs</title>
+      <link>https://sidmani.com/posts/behavior-of-edited-programs/</link>
+      <pubDate>Wed, 28 Apr 2021 12:18:59 -0700</pubDate>
+      
+      <guid>https://sidmani.com/posts/behavior-of-edited-programs/</guid>
+      <description>I&amp;rsquo;ve been thinking about computation and program synthesis a lot recently. Program synthesis is the process of constructing a program based on constraints or example input/output pairs. This problem is extraordinarily difficult; the best methods essentially enumerate all reasonable programs, for some heuristic definition of reasonable, and run them to see if they work. In this situation, it would be convenient if, knowing what a program does, you could make a guess at what an edited version of the program does.</description>
+    </item>
+    
+    <item>
+      <title>Enumerating programs that halt</title>
+      <link>https://sidmani.com/posts/enumerating-programs-that-halt/</link>
+      <pubDate>Fri, 16 Apr 2021 18:47:27 -0700</pubDate>
+      
+      <guid>https://sidmani.com/posts/enumerating-programs-that-halt/</guid>
+      <description>Suppose there&amp;rsquo;s a binary string, and we want to find a program that generates the string. Further assume that we are in possession of a universal Turing machine, that accepts programs and input in a predetermined binary representation. Then, how do we find such a program? Naively searching (by evaluating all length-\(n\) programs for all \(n\)) is dangerous, since we cannot know if any particular program halts; our procedure might get stuck while evaluating some program.</description>
+    </item>
+    
+    <item>
+      <title>Connecting the halting problem and induction</title>
+      <link>https://sidmani.com/posts/halting-problem/</link>
+      <pubDate>Sun, 11 Apr 2021 12:38:05 -0700</pubDate>
+      
+      <guid>https://sidmani.com/posts/halting-problem/</guid>
+      <description>Suppose we have a program \(\mathbf{H}(p, x)\) that solves the halting problem for any program \(p\) evaluated on input \(x\), returning \(\mathrm{True}\) if the program halts and \(\mathrm{False}\) otherwise. Consider statements of the form \(\forall n \in \mathbb{N}: A(n)\), where \(A\) is some proposition that can be easily evaluated for any particular natural number. Let \(p(A)\) be the following program:
+i = 1 loop forever: if not A(i): return i += 1 Then the evaluation of \(\neg\mathbf{H}(p, A)\) constitutes a proof of the truth or falsehood of the statement \(A\) for all natural numbers, if the evaluation of \(A(n)\) is guaranteed to halt.</description>
+    </item>
+    
+    <item>
+      <title>Backpropagation, hierarchy, and adversarial examples</title>
+      <link>https://sidmani.com/posts/backprop/</link>
+      <pubDate>Sun, 28 Mar 2021 19:26:00 -0700</pubDate>
+      
+      <guid>https://sidmani.com/posts/backprop/</guid>
+      <description>One could easily believe that backpropagation ranks among the three most-computed algorithms in history.1 Backpropagation (backprop) exploits the chain rule from multivariable calculus to enable optimization of a parameterized function, usually a neural network.2 In order to support calculus, the function must be differentiable everywhere, and therefore continuous. We&amp;rsquo;ve already taken a look at the dangers of continuity. In this post, we&amp;rsquo;ll examine how the mechanics of backprop could harm representation learning.</description>
+    </item>
+    
+    <item>
+      <title>Difficulties with continuous approximation</title>
+      <link>https://sidmani.com/posts/difficulties-continuous-approximation/</link>
+      <pubDate>Sat, 20 Mar 2021 20:32:59 -0700</pubDate>
+      
+      <guid>https://sidmani.com/posts/difficulties-continuous-approximation/</guid>
+      <description>Artificial neural networks (ANNs) are continuous, differentiable functions, and a well-known result1 established ANNs as universal approximators. Given any continuous vector-valued function \( f \), it is possible to construct an ANN that approximates \( f \) over a given region2 with as little error as desired. Decreasing the error means we&amp;rsquo;ll probably need to enlarge the network, but that&amp;rsquo;s not an issue in principle.
+However, most functions that we&amp;rsquo;d like to approximate are not continuous.</description>
+    </item>
+    
+    <item>
+      <title>What are shapes?</title>
+      <link>https://sidmani.com/posts/what-are-shapes/</link>
+      <pubDate>Wed, 24 Feb 2021 16:54:12 -0800</pubDate>
+      
+      <guid>https://sidmani.com/posts/what-are-shapes/</guid>
+      <description>I&amp;rsquo;ve been studying geometric representations and computer graphics for some time now, and I haven&amp;rsquo;t seen anyone talk about shapes and geometry in an accessible way. So in this post, I&amp;rsquo;ll quickly go over what shapes really are, and where they come from.
+A shape is an object with volume and a surface. There are all sorts of technicalities that arise when definining volumes and surfaces, involving self-intersections, holes, and edges.</description>
+    </item>
+    
+    <item>
+      <title>A glossary of Japanese self-study</title>
+      <link>https://sidmani.com/posts/glossary-of-japanese/</link>
+      <pubDate>Thu, 11 Jul 2019 11:27:46 -0800</pubDate>
+      
+      <guid>https://sidmani.com/posts/glossary-of-japanese/</guid>
+      <description>Japanese is arguably the most difficult language for English speakers to learn,1 yet the relatively recent popularization of Japanese media has resulted in a disproportionate number of learners on the Internet. Consider the number of subscribers to the various language-learning subreddits,2 which puts Japanese at more than two times as popular as the next-largest language, French. The explosive growth of the Japanese-learning community has produced a large number of free online resources, albeit of varying quality, and beginners are likely to be completely overwhelmed.</description>
+    </item>
+    
+  </channel>
+</rss>

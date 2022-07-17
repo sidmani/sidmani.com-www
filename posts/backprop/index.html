@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ψ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Backpropagation, hierarchy, and adversarial examples"/>
+<meta name="twitter:description" content="One could easily believe that backpropagation ranks among the three most-computed algorithms in history.1 Backpropagation (backprop) exploits the chain rule from multivariable calculus to enable optimization of a parameterized function, usually a neural network.2 In order to support calculus, the function must be differentiable everywhere, and therefore continuous. We&rsquo;ve already taken a look at the dangers of continuity. In this post, we&rsquo;ll examine how the mechanics of backprop could harm representation learning."/>
+<meta name="twitter:site" content="@ftlsid"/>
+
+  </head>
+
+  <body>
+
+<div class="article-meta">
+<h1><span class="title">Backpropagation, hierarchy, and adversarial examples</span></h1>
+</div>
+
+<main>
+<p>One could easily believe that backpropagation ranks among the three most-computed algorithms in history.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> Backpropagation (backprop) exploits the chain rule from multivariable calculus to enable optimization of a parameterized function, usually a neural network.<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> In order to support calculus, the function must be differentiable everywhere, and therefore continuous. We&rsquo;ve already taken a look at the <a href="/posts/difficulties-continuous-approximation/">dangers of continuity</a>. In this post, we&rsquo;ll examine how the mechanics of backprop could harm representation learning.</p>
+<p>The <em>vanishing gradient problem</em> is a common issue with backprop. Due to the repeated multiplication of partial derivatives, the average gradient for a neuron in a particular layer decreases exponentially with distance from the output layer. As the network becomes deeper, the gradients for the earlier layers &ldquo;vanish,&rdquo; so neurons in those layers don&rsquo;t learn. Here&rsquo;s a diagram of what the gradients might look like in a fully-connected network.</p>
+<p><img src="/static/backprop_fc.png" class="main-img"></img></p>
+<p>The standard counter-strategy is to introduce skip connections, which bypass layers to provide gradient paths that don&rsquo;t include the problematic multiplications. In fact, this technique is so effective that it basically started the deep learning era.</p>
+<p><img src="/static/backprop_fc_skip.png" class="main-img"></img></p>
+<p>Let&rsquo;s take a step back and think about how humans represent objects and ideas. Humans tend to group concepts using hierarchical relations: eye (part of) head (part of) body. It would make intuitive sense if neural networks did the same thing, by increasing the level of abstraction at each successive layer. In fact, finding a good hierarchy of abstractions will likely improve the performance of any downstream task.</p>
+<p>Convolutional networks have this idea built into their architecture, enforced by multiple levels of pooling. Fully-connected networks have no such architectural bias; even so, one might expect the layers to map somehow to levels of abstraction.</p>
+<p>Let&rsquo;s select a neuron (blue) and find the five neurons that are the most important to this neuron&rsquo;s activation value. That is, with respect to which neurons&rsquo; activations is the partial derivative of our blue neuron&rsquo;s activation the largest?</p>
+<p><img src="/static/backprop_fc_local.png" class="main-img"></img></p>
+<p>The most impactful neurons are preferentially located in the layer immediately prior to the selected neuron. This pattern of gradients is what we&rsquo;d expect if layers represented hierarchical structure in the input. Changing early neurons (which are closely tied to individual elements of the input vector) would not affect the overall representation, and therefore blue&rsquo;s activation value, very much. But changing later neurons, which represent large-scale features, significantly changes the activation of the blue neuron. Now, let&rsquo;s look at the same diagram, with an additional skip connection:</p>
+<p><img src="/static/backprop_fc_local_skip.png" class="main-img"></img></p>
+<p>Some neurons in the first layer are now more important than those in later layers! This is a natural consequence of solving the vanishing gradient problem. By trying to make the gradients more uniform, we&rsquo;ve scattered the representational hierarchy across layers. In this case, successive layers don&rsquo;t get increasingly abstract representations as input; instead, they have to work with data that mixes multiple levels of abstraction.</p>
+<p>Although convolutional networks are structured in an hierarchical way, I think similar logic probably applies, and inhibits hierarchical learning to some degree. This is pure speculation, but adversarial examples might be a direct consequence of a broken representational structure. In fact, there&rsquo;s some evidence<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> that using learning algorithms other than backprop actually makes networks more robust to adversarial examples.</p>
+<p>To restate the point, it&rsquo;s not that backpropagation itself is harmful. The problem is that the skip connections, which are necessary to prevent vanishing gradients, induce mixing of representational levels. Although some research exists on alternatives to backprop,<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> the proposed algorithms are far from mainstream, and in many cases fail to match backprop&rsquo;s performance on even simple datasets like MNIST.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>My guesses for the other two are SHA-256 and Keccak-256—Bitcoin and Ethereum, respectively. But of course there&rsquo;s no way of knowing.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>In case you need a refresher on backprop, I really like <a href="http://neuralnetworksanddeeplearning.com/chap2.html">Michael Nielsen&rsquo;s explanation</a>.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>Akrout, Mohamed. <a href="https://arxiv.org/abs/1908.03560">On the Adversarial Robustness of Neural Networks without Weight Transport</a>. arXiv preprint arXiv:1908.03560 (2019).&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4">
+<p>Duan, Shiyu, and Jose C. Principe. <a href="https://arxiv.org/abs/2101.03419">Training Deep Architectures Without End-to-End Backpropagation: A Brief Survey</a>. arXiv preprint arXiv:2101.03419 (2021).&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+<i>If you liked this post, you can also follow me on <a href="https://twitter.com/ftlsid">Twitter</a>.</i>
+</main>
+  </body>
+  
+</html>
+

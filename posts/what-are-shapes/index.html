@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ψ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="What are shapes?"/>
+<meta name="twitter:description" content="I&rsquo;ve been studying geometric representations and computer graphics for some time now, and I haven&rsquo;t seen anyone talk about shapes and geometry in an accessible way. So in this post, I&rsquo;ll quickly go over what shapes really are, and where they come from.
+A shape is an object with volume and a surface. There are all sorts of technicalities that arise when definining volumes and surfaces, involving self-intersections, holes, and edges."/>
+<meta name="twitter:site" content="@ftlsid"/>
+
+  </head>
+
+  <body>
+
+<div class="article-meta">
+<h1><span class="title">What are shapes?</span></h1>
+</div>
+
+<main>
+<p>I&rsquo;ve been studying geometric representations and computer graphics for some time now, and I haven&rsquo;t seen anyone talk about shapes and geometry in an accessible way. So in this post, I&rsquo;ll quickly go over what shapes really are, and where they come from.</p>
+<p>A shape is an object with volume and a surface. There are all sorts of technicalities that arise when definining volumes and surfaces, involving self-intersections, holes, and edges. We&rsquo;re mainly interested in modeling objects that arise in physics and real-world scenarios, so for our purposes, a shape will simply be defined as the form of any rigid object you might find in reality. This vague definition serves to include reasonable objects, like dice and coffee cups, and excludes <a href="https://en.wikipedia.org/wiki/Alexander_horned_sphere">horrifying pathologies</a> that are best consigned to dark corners of mathematicians&rsquo; imaginations. Note that although fluids and deformable objects change with time, at any given instant these kinds of objects have a rigid geometry. Things like smoke and foam that have no clear surface and possibly fractal structure, however, are excluded.</p>
+<p>More precisely, shapes are:</p>
+<ul>
+<li><strong>connected</strong>: there exists a continuous path between any two points on the shape&rsquo;s surface. This means we&rsquo;re talking about a single object and not a collection of objects.</li>
+<li><strong>closed</strong>: the shape&rsquo;s surface doesn&rsquo;t have an edge, like a circle floating in space. Furthermore, the surface doesn&rsquo;t extend to infinity like a plane.
+<ul>
+<li>This gives us a further property: <strong>completeness</strong>. There are no holes or missing points in the surface.</li>
+</ul>
+</li>
+<li><strong>manifold</strong>: the surface has no multi-way junctions, where more than two sheets meet. In mathematical terminology, this states that a neighborhood of every point is homeomorphic to Euclidean space.</li>
+</ul>
+<p>Under these assumptions, our shapes will always divide 3D space into two regions. One region has finite volume, and we&rsquo;ll call this the <strong>interior</strong> of the shape; the other region will be called the <strong>exterior</strong>. The surface of the shape, known as the <strong>boundary</strong>, is not part of either the exterior or the interior. The shape itself is the set union of the interior and boundary.</p>
+<p>Let&rsquo;s take a moment to talk about dimension. Reality is 3-dimensional, as any point in space can be uniquely determined by 3 values. Surfaces have dimension 2; for example, any location on Earth&rsquo;s surface is fully described by longitude and latitude. So shapes, as we defined them above, consist of a 2D surface bounding a 3D volume located in 3D space.</p>
+<p>If the surface doesn&rsquo;t contain any sharp points or creases, we can approximate small regions around each point on the surface with a plane. This is analogous to the tangent line in single-variable calculus, and as the area of the small region goes to zero, the approximation plane will become tangent to the surface at the point. Such a surface is <strong>differentiable</strong>. Any vector perpendicular to this plane is called a <strong>normal vector</strong> to the surface at the point. All of these normals lie on a line, and we&rsquo;ll usually be interested in the unit normal: the unique unit-length vector perpendicular to the tangent plane pointing towards the exterior. We can pick the exterior-pointing normal consistently because of the assumption of closedness above. Even if a surface is non-differentiable at points, under the assumption of closedness, we can approximate it arbitrarily well with a surface that&rsquo;s differentiable everywhere.</p>
+<h2 id="how-do-surfaces-arise">How do surfaces arise?</h2>
+<p>Surfaces usually show up in three ways: level sets, images of functions, and piecewise combinations of the preceding forms. Let&rsquo;s go over each one of these.</p>
+<h3 id="level-sets">Level sets</h3>
+<p>Level sets are solutions to equations of the form \(\mathbf{F}(\mathbf{x}) = k\). Suppose \(\mathbf{x} \in \mathbb{R}^n\); then, a level set of \(\mathbf{F}\) is a surface in at most \(n\) dimensions. Under certain conditions, the level set will be a surface of dimension \(n-1\); this is the case we&rsquo;re interested in. Level sets are also called isosurfaces or isocontours.</p>
+<h3 id="images">Images</h3>
+<p>The <em>image</em> of a function is the set of the output values for all possible input values. For example, the image of \(f(x) = x^2\) over \(x \in \mathbb{R}\) is the nonnegative reals. Images are frequently called parametrizations; for example, the unit sphere is parametrized by the transformation \(\left( \sin \phi \cos \theta, \sin\phi \sin\theta, \cos\phi\right)\), for \(\phi \in [0, \pi], \theta \in [0, 2\pi]\).</p>
+<h3 id="piecewise-combinations">Piecewise combinations</h3>
+<p>Imagine that we chop up portions of the above two types of surfaces, and align the boundaries (important!). Then, we&rsquo;ll get a surface defined by different equations at different points. For example, a cylinder is a piecewise combination of two circles (sections of a plane), and a hollow tube defined by the equation \(x^2 + y^2 = r\) and some constraints on the \(z\)-coordinate. If we align the tangent planes along the boundaries, then the resultant shape will be differentiable if the components are themselves differentiable.</p>
+<p>That&rsquo;s all for now; hopefully, you have a slightly deeper understanding of shapes and geometry. If you want to study the mathematics of surfaces, the relevant fields are differential geometry (calculus on surfaces) and topology (the study of connectedness).</p>
+
+<i>If you liked this post, you can also follow me on <a href="https://twitter.com/ftlsid">Twitter</a>.</i>
+</main>
+  </body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css" integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.js" integrity="sha384-JiKN5O8x9Hhs/UE5cT5AAJqieYlOZbGT3CHws/y97o3ty4R7/O5poG9F3JoiOYw1" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+</html>
+

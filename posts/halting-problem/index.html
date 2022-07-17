@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ψ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+    <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://sidmani.com/saitama.jpg"/>
+
+<meta name="twitter:title" content="Connecting the halting problem and induction"/>
+<meta name="twitter:description" content="How to use the HALTS program to prove statements over the natural numbers"/>
+<meta name="twitter:site" content="@ftlsid"/>
+
+  </head>
+
+  <body>
+
+<div class="article-meta">
+<h1><span class="title">Connecting the halting problem and induction</span></h1>
+</div>
+
+<main>
+<p><img src="/saitama.jpg" class="main-img"></img>
+<br>
+Suppose we have a program \(\mathbf{H}(p, x)\) that solves the <a href="https://en.wikipedia.org/wiki/Halting_problem">halting problem</a> for any program \(p\) evaluated on input \(x\), returning \(\mathrm{True}\) if the program halts and \(\mathrm{False}\) otherwise. Consider statements of the form \(\forall n \in \mathbb{N}: A(n)\), where \(A\) is some proposition that can be easily evaluated for any particular natural number. Let \(p(A)\) be the following program:</p>
+<pre tabindex="0"><code>i = 1
+loop forever:
+  if not A(i):
+    return
+  i += 1
+</code></pre><p>Then the evaluation of \(\neg\mathbf{H}(p, A)\) constitutes a proof of the truth or falsehood of the statement \(A\) for all natural numbers, if the evaluation of \(A(n)\) is guaranteed to halt. Essentially, the halting function \(\mathbf{H}\) automatically performs the process of mathematical induction.</p>
+<p>When \(A(n)\) is sufficiently simple, for instance \(n \leq 2^n\), we can just perform the induction manually, and there&rsquo;s no reason to invoke the halting function \(\mathbf{H}\). But what if checking \(A(n)\) involves a procedure that may not halt? Let&rsquo;s try to apply the method to Fermat&rsquo;s Last Theorem:
+$$\forall n &gt; 2, \forall a, b, c \in \mathbb{Z} : a^n + b^n \neq c^n$$
+First, we have find out how to evaluate the statement for any given \(n\). Let \(\mathbb{Z}^3\) be the countably infinite set of triples of integers, and let \(I(n):\mathbb{N} \rightarrow \mathbb{Z}^3\) be an enumeration of the set of triples. Let \(A(n)\) be the following procedure:</p>
+<pre tabindex="0"><code>j = 1
+loop forever:
+  x, y, z = I(j)
+  if x^n + y^n == z^n:
+    return False
+  j += 1
+return True // never executed 
+</code></pre><p>This procedure halts only if it finds a counterexample for a particular value of \(n\). Suppose we try to apply the program \(p\) that we defined above. If the condition \(x^n + y^n = z^n\) is not true for any integers given a particular value of \(n\), \(A(n)\) doesn&rsquo;t halt, so \(p\) (which invokes \(A\)) also fails to halt. For example, if \(A(3)\) does not halt, the values \(n &gt; 3\) are never checked. Then the value of \(\neg \mathbf{H}(p, A)\) is equivalent to \(\exists n \in \mathbb{N}: A(n)\) rather than the desired \(\forall n \in \mathbb{N}: A(n)\).</p>
+<p>As it turns out, we can solve this by invoking \(\mathbf{H}\) again. Take a look at the following program, \(q(A)\):</p>
+<pre tabindex="0"><code>i = 3 // because the theorem says n &gt; 2
+loop forever:
+  if H(A, i):
+    return
+  i += 1
+</code></pre><p>Instead of using a Boolean return value, we can define \(A\) such that it halts if and only if the statement is false, and use the power of \(\mathbf{H}\) to immediately check an infinity of cases. Now, the expression \(\neg \mathbf{H}(q, A) \) constitutes a proof of Fermat&rsquo;s Last Theorem. A similar argument can be used for many difficult problems over the natural numbers; for instance, the Collatz conjecture can be solved by constructing \(A\) to evaluate, term-by-term, the Collatz sequence of a number. By employing a few dumb tricks, a computer with super-Turing capabilities could prove almost any theorem over the natural numbers, including many that have stumped the best of us for centuries.</p>
+<p>I think this is a pretty strong argument in favor of the Church-Turing thesis,<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> which states that a function that Turing machines cannot compute cannot be evaluated by any method whatsoever. That is to say, the function \(\mathbf{H}\) cannot be physically instantiated, because the universe does not allow it.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>Technically, this is the converse of the CTT; see the <a href="https://plato.stanford.edu/entries/church-turing/#MakiInfoConcPrec">Stanford philosophy page</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+<i>If you liked this post, you can also follow me on <a href="https://twitter.com/ftlsid">Twitter</a>.</i>
+</main>
+  </body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css" integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.js" integrity="sha384-JiKN5O8x9Hhs/UE5cT5AAJqieYlOZbGT3CHws/y97o3ty4R7/O5poG9F3JoiOYw1" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+</html>
+

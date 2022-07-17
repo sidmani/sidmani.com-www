@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ψ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Enumerating programs that halt"/>
+<meta name="twitter:description" content="Suppose there&rsquo;s a binary string, and we want to find a program that generates the string. Further assume that we are in possession of a universal Turing machine, that accepts programs and input in a predetermined binary representation. Then, how do we find such a program? Naively searching (by evaluating all length-\(n\) programs for all \(n\)) is dangerous, since we cannot know if any particular program halts; our procedure might get stuck while evaluating some program."/>
+<meta name="twitter:site" content="@ftlsid"/>
+
+  </head>
+
+  <body>
+
+<div class="article-meta">
+<h1><span class="title">Enumerating programs that halt</span></h1>
+</div>
+
+<main>
+<p>Suppose there&rsquo;s a binary string, and we want to find a program that generates the string. Further assume that we are in possession of a universal Turing machine, that accepts programs and input in a predetermined binary representation. Then, how do we find such a program? Naively searching (by evaluating all length-\(n\) programs for all \(n\)) is dangerous, since we cannot know if any particular program halts; our procedure might get stuck while evaluating some program. A better way would be to somehow &ldquo;parametrize&rdquo; programs that halt, and only try those.</p>
+<p>For any specific length, this is impossible. Suppose we have a program for the aforementioned universal Turing machine, \(\mathbf{E}(n)\), that enumerates all programs of length \(n\) that halt, and then halts itself. Pick any program \(\mathbf{P}\), and let its length be \(k\). Then the output of \(\mathbf{E}(k)\) either contains \(\mathbf{P}\) or doesn&rsquo;t, which determines whether \(\mathbf{P}\) halts. This is uncomputable, so \(\mathbf{E}\) cannot exist.</p>
+<p>If we just want to <em>eventually</em> output all halting programs, enumeration is possible with <a href="https://en.wikipedia.org/wiki/Dovetailing_(computer_science)">dovetailing</a>. The strategy is best explained by the following image:
+<img src="/diagonal_scheduling.gif" class="main-img"></img></p>
+<div class="imgref">Jochen Burghardt, CC-BY-SA 3.0 via <a href="https://commons.wikimedia.org/wiki/File:Recursive_enumeration_of_all_halting_Turing_machines.gif">Wikimedia commons</a></div>
+<p>Each row is a program, and each column is one step of each program&rsquo;s execution. By executing along the red path, and returning the index of every program that terminates, we will eventually output every program that halts. However, after any finite number of timesteps, there will still be infinitely many programs that haven&rsquo;t even begun running yet. Furthermore, nothing can be said about whether programs that are currently running will halt in the future—so the uncomputability of the halting problem is respected.</p>
+<p>These two examples imply that any system that learns algorithms (like the brain probably does) cannot be perfect; it likely has to apply a runtime cutoff while searching for algorithms. Of course, really slow programs would be useless for responding quickly to an environment anyway. Simpler (shorter) programs are probably better, since they compress the input data more efficiently. Programs that are longer than the input data can directly encode the data, so they&rsquo;re not really &ldquo;explaining&rdquo; it, and can be ignored. Heuristics like these probably guide algorithm search in the brain.</p>
+
+<i>If you liked this post, you can also follow me on <a href="https://twitter.com/ftlsid">Twitter</a>.</i>
+</main>
+  </body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css" integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.js" integrity="sha384-JiKN5O8x9Hhs/UE5cT5AAJqieYlOZbGT3CHws/y97o3ty4R7/O5poG9F3JoiOYw1" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+</html>
+

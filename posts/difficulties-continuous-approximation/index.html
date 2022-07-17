@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ψ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Difficulties with continuous approximation"/>
+<meta name="twitter:description" content="Artificial neural networks (ANNs) are continuous, differentiable functions, and a well-known result1 established ANNs as universal approximators. Given any continuous vector-valued function \( f \), it is possible to construct an ANN that approximates \( f \) over a given region2 with as little error as desired. Decreasing the error means we&rsquo;ll probably need to enlarge the network, but that&rsquo;s not an issue in principle.
+However, most functions that we&rsquo;d like to approximate are not continuous."/>
+<meta name="twitter:site" content="@ftlsid"/>
+
+  </head>
+
+  <body>
+
+<div class="article-meta">
+<h1><span class="title">Difficulties with continuous approximation</span></h1>
+</div>
+
+<main>
+<p>Artificial neural networks (ANNs) are continuous, differentiable functions, and a well-known result<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> established ANNs as universal approximators. Given any continuous vector-valued function \( f \), it is possible to construct an ANN that approximates \( f \) over a given region<sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> with as little error as desired. Decreasing the error means we&rsquo;ll probably need to enlarge the network, but that&rsquo;s not an issue in principle.</p>
+<p>However, most functions that we&rsquo;d like to approximate are not continuous. Suppose we have a cube that is fixed on the origin in 3D space, and can be rotated around the origin freely. The orientation of the cube can be fully described by two values; let&rsquo;s call these \(\phi\) and \(\theta\), as in spherical coordinates. Consider the function that maps the pair \( (\phi, \theta) \) to a visual image of this cube, represented as a grid of pixels. Although rigid transformations of an object in 3D space are continuous, the quantization into pixels introduces discontinuity. The easiest way to imagine this is to take the image and &ldquo;flatten&rdquo; it into a linear arrangement (a vector) of pixels. As the cube rotates, its boundaries will align with different pixels, and the vector will change rapidly. Continuity means that very small changes in a function&rsquo;s input lead to very small changes in the output. But no matter how slight a rotation is—no matter how small the deltas in the new orientation \((\phi + \Delta \phi, \theta + \Delta \theta)\) are—if the cube&rsquo;s edges happen to cross a pixel boundary during the rotation, the image vector will change by a large amount. Furthermore, any inverse<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup> of the orientation-to-image function that maps an image of the cube to an orientation must also be discontinuous.</p>
+<p><img class="main-img" src="/static/cube.png" alt="A rainbow cube"></img></p>
+<div class="imgref">Differentiable rendering usually requires "fuzzing" the boundaries of objects, to allow nonzero gradients.</div>
+<p>This idea easily generalizes to a wide variety of transformations: translation, scaling, reflection. In fact, almost all motion or deformation in 3D is continuous in terms of the volume of the object, but is discontinuous when approximated by a regular pixel grid. Occlusion, when one object blocks out another, seems discontinuous in both real-life and pixel space. However, it&rsquo;s worth thinking carefully about what occlusion is: the overlap of the projections of two objects. Actually, occlusion is continuous when considering the visible area of each object. Imagine a solar eclipse, where the ambient light smoothly dims and brightens as the moon passes across the sun&rsquo;s disk. Of course, as with all the other transformations, occlusion is discontinuous in terms of pixels.</p>
+<p><img class="main-img" src="/static/pixel_continuity.png" alt="A diagram of pixel brightness as unit step functions"></img></p>
+<div class="imgref">Pixels turn on and off discontinuously as an object passes under them.</div>
+<p>With a little imagination, we can conclude that pretty much every function that involves decomposing, describing, or producing images of scenes containing objects is discontinuous, due to the nature of pixel quantization. This is a problem for the obvious reason: all the images that we train our networks on are made of pixels. So, by attempting to generate or understand images, we try to learn pixel-continuous approximations to discontinuous functions.</p>
+<p>Interpolation videos from GANs trained on complex scenes display some negative effects of continuity. When interpolating, objects tend to warp and change color to form new shapes, rather than rotating or translating. Part semantics are usually not preserved (i.e. hands don&rsquo;t usually transform into hands), which implies that the GAN is not learning a compositional 3D representation in the way humans do. I think that the pixel-continuity requirement actually inhibits the formation of compositional or semantic representations. One would expect that the gradient descent process would settle on the representation that best explains the data; for images of 3D scenes, that representation must be some sort of decomposition into objects and their poses. But this representation is not continuous in pixel-space, so it&rsquo;s likely ignored in favor of some inferior representation that satisfies the continuity constraint.</p>
+<p>The effects of this problem seem relatively minor in practice; after all, convolutional networks seem to work fine for object localization and pose estimation, and GANs can generate images of objects from multiple views. This is easy to explain: since, for image applications, the desired function is something like a sum of 2-dimensional unit step functions, a continuous approximation can become quite good. If the network is large enough, most of the ill effects of continuity can be masked at the expense of wasted network capacity and poor representations. However, the fundamental problem remains. For more complicated functions, which may have infinitely many discontinuities, a continuous neural network will fail to provide a reasonable approximation. For images, discontinuity is easy to identify, but for other domains it may not even be known whether the desired function is discontinuous.</p>
+<p>Could we use discontinuous function approximators instead? Possibly, but functions cannot be differentiated at discontinuities, so gradient descent would no longer apply. Since gradient descent and its variants are the most popular and successful training algorithms by a large margin, non-differentiable or discontinuous alternatives to neural networks are relatively underexplored. In fact, as we&rsquo;ll see in the next post, backpropagation and gradient descent cause a separate set of problems.</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><a href="https://www.sciencedirect.com/science/article/abs/pii/0893608089900208">Hornik <em>et al</em>., 1989</a>&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<p>The region needs to be <a href="https://en.wikipedia.org/wiki/Compact_space">compact</a>.&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3">
+<p>The inverse is not unique everywhere, since the cube has symmetries, but we could restrict the domain of the inverse in order to define it formally.&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+<i>If you liked this post, you can also follow me on <a href="https://twitter.com/ftlsid">Twitter</a>.</i>
+</main>
+  </body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.css" integrity="sha384-BdGj8xC2eZkQaxoQ8nSLefg4AV4/AwB3Fj+8SUSo7pnKP6Eoy18liIKTPn9oBYNG" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/katex.min.js" integrity="sha384-JiKN5O8x9Hhs/UE5cT5AAJqieYlOZbGT3CHws/y97o3ty4R7/O5poG9F3JoiOYw1" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+
+</html>
+
